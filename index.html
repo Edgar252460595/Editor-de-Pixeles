@@ -1,0 +1,44 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Pixel Editor</title>
+  </head>
+  <body>
+    <h1 class="titulo">Editor de Pixel</h1>
+
+    <div id="contenedorHerramientas" class="menuFlotante">
+      <aside>
+        <button class="arrastre">:::</button>
+        <ul id="listaDeHerramientas">
+
+          <li id="lapiz">Lapiz</li>
+
+          <li> <input type="color" id="colorLapiz" value="#000000"> </li>
+
+          <li id="borrador">Borrador</li>
+          <li>
+            <div class="EspacioDeTrabajo">
+          <select name="celdas" id="CantidadDeCuadros">
+                <option value="4" selected>4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+                <option value="64">64</option>
+                <option value="128">128</option>
+              </select>
+            </div>
+          </li>
+
+        </ul>
+      </aside>
+    </div>
+
+    <div class="contenedorCanvas">
+      <canvas id="EspacioDeCanvas" width="512" height="512"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

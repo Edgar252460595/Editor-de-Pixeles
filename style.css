@@ -1,0 +1,101 @@
+body{
+    background-color: #c6e5b1;
+}
+
+#EspacioDeCanvas{
+    border: solid 1px black;
+}
+
+.contenedorCanvas{
+    display: flex;
+    justify-content: center;
+    margin-top: 4vh;
+}
+
+
+#EspacioDeCanvas{
+    background-color: white;
+}
+
+.titulo{
+    text-align: center;
+    margin: 4vh;
+
+}
+
+
+/*Menu de herramientas-------------------------*/
+
+#contenedorHerramientas{
+    border: solid black 1px;
+    border-radius: 5px;
+    display: flex;
+    position: fixed;
+    width: 10vw;
+    height: auto;
+    justify-content: center;
+    z-index: 10000;
+    top: 50px;
+    right: 50px;
+    background-color: #ffc094;
+    box-shadow: #ffc194b8;
+    
+}
+
+.arrastre{
+   position: absolute;
+   top: 0;
+   left: 0;
+   border-radius: 5px;
+   border: 0px;
+   background-color: #ffc094;
+   cursor:grab;
+}
+
+
+.arrastre:active{
+   cursor:grabbing;
+}
+
+#listaDeHerramientas{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#listaDeHerramientas li {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    background-color: aliceblue;
+    cursor: pointer;
+}
+
+#listaDeHerramientas li:hover{
+    background-color: rgba(240, 248, 255, 0.79);
+
+}
+
+#listaDeHerramientas li:active{
+    background-color: rgba(240, 248, 255, 0.693);
+
+}
+
+#CantidadDeCuadros{
+    background-color: aliceblue;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#colorLapiz{
+    background-color: aliceblue;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+}
