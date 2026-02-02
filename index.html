@@ -12,15 +12,14 @@
       <aside>
         <button class="arrastre">:::</button>
         <ul id="listaDeHerramientas">
-
           <li id="lapiz">Lapiz</li>
 
-          <li> <input type="color" id="colorLapiz" value="#000000"> </li>
+          <li><input type="color" id="colorLapiz" value="#000000" /></li>
 
           <li id="borrador">Borrador</li>
           <li>
             <div class="EspacioDeTrabajo">
-          <select name="celdas" id="CantidadDeCuadros">
+              <select name="celdas" id="CantidadDeCuadros">
                 <option value="4" selected>4</option>
                 <option value="8">8</option>
                 <option value="16">16</option>
@@ -30,6 +29,9 @@
               </select>
             </div>
           </li>
+          <li id="btn_QuitarGrillas">Quitar Grillas</li>
+
+          <li id="rellenar">Rellenar</li>
 
         </ul>
       </aside>
@@ -37,6 +39,7 @@
 
     <div class="contenedorCanvas">
       <canvas id="EspacioDeCanvas" width="512" height="512"></canvas>
+      <canvas id="gridCanvas" width="512" height="512"></canvas>
     </div>
 
     <script src="script.js"></script>

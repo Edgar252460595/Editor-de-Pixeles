@@ -7,7 +7,11 @@ const $$ = document.querySelectorAll.bind(document);
 //--------------------------------------------------------------------
 
 const canvas = $("#EspacioDeCanvas");
-const ctx = canvas.getContext("2d");
+const gridCanvas = $("#gridCanvas")
+
+const canvas_ctx = canvas.getContext("2d");
+const grid_ctx = gridCanvas.getContext("2d");
+
 const CantidadDeCuadros = $("#CantidadDeCuadros");
 let cellSize = canvas.width / parseInt(CantidadDeCuadros.value);
 
@@ -21,26 +25,30 @@ CantidadDeCuadros.addEventListener("change", () => {
 //--funcion de dibujo de celdas------------------------------------------------------------------
 
 function limpiarCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
+  canvas_ctx.clearRect(0, 0, canvas.width, canvas.height);
+  grid_ctx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+
+  canvas_ctx.beginPath();
+  grid_ctx.beginPath();
+
 }
 
 function DibujarCeldas() {
   limpiarCanvas();
 
-  ctx.beginPath();
+  grid_ctx.beginPath();
 
   const gridSize = canvas.width / cellSize;
 
   for (let i = 0; i < gridSize; i++) {
-    ctx.moveTo(i * cellSize, 0);
-    ctx.lineTo(i * cellSize, canvas.height);
+    grid_ctx.moveTo(i * cellSize, 0);
+    grid_ctx.lineTo(i * cellSize, canvas.height);
 
-    ctx.moveTo(0, i * cellSize);
-    ctx.lineTo(canvas.width, i * cellSize);
+    grid_ctx.moveTo(0, i * cellSize);
+    grid_ctx.lineTo(canvas.width, i * cellSize);
   }
-  ctx.strokeStyle = "#ccc";
-  ctx.stroke();
+  grid_ctx.strokeStyle = "#ccc";
+  grid_ctx.stroke();
 }
 
 //--------------------------------------------------------------------
@@ -48,6 +56,15 @@ function DibujarCeldas() {
 // pre cargar canva
 
 DibujarCeldas();
+
+//---Oculatar grillas----------------------------------------------------------------------------------------------------
+const btn_OcultarGrillas =$("#btn_QuitarGrillas")
+
+btn_OcultarGrillas.addEventListener("click", () =>{
+  gridCanvas.classList.toggle("ocultar")
+})
+
+
 
 //-------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------
@@ -170,6 +187,7 @@ const btn_borrador = $("#borrador");
 let herramientas = {
   lapiz: true,
   borrador: false,
+  rellenar: false,
 };
 
 function quitarSelecionHerramienta() {
@@ -190,6 +208,14 @@ btn_borrador.addEventListener("click", () => {
   herramientas.borrador = true;
 });
 
+const rellenar = $("#rellenar")
+
+rellenar.addEventListener("click", () =>{
+  quitarSelecionHerramienta();
+  rellenar = true;
+})
+
+
 //--sacar datos de posicion y dibuo y borrado de celdas---------------------------------------------------------------------------------------------
 
 let mousePresionando = false;
@@ -208,6 +234,85 @@ function sacarDatos(e) {
 
   return { celdaX, celdaY };
 }
+
+
+
+
+
+// Lapiz --------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+
+let colorDibujado = "#000";
+
+function moverLapiz(e) {
+
+
+  // funcion de dibular al esta activo el dibujando
+
+  if (e.buttons === 1){
+
+  if (mousePresionando === true && herramientas.lapiz === true) {
+
+
+    let datosCeldas = sacarDatos(e);
+    if (!datosCeldas) return;
+
+    canvas_ctx.fillStyle = `${colorDibujado}`;
+
+      canvas_ctx.fillRect(
+      datosCeldas.celdaX * cellSize,
+      datosCeldas.celdaY * cellSize,
+      cellSize,
+      cellSize,
+    );
+  }
+    }
+
+    if (e.buttons & 2) moverBorrador(e);
+  
+}
+
+// borrador---------------------------------------------------------
+// ------------------------------------------------------------------
+// -----------------------------------------------------------------
+
+function moverBorrador(e) {
+  // funcion de dibular al esta activo el dibujando
+
+  if(!mousePresionando) return;
+
+      let datosCeldas = sacarDatos(e);
+
+
+  if (herramientas.borrador && (e.buttons === 1)) {
+
+
+    if (!datosCeldas) return;
+
+    canvas_ctx.clearRect(
+      datosCeldas.celdaX * cellSize,
+      datosCeldas.celdaY * cellSize,
+      cellSize,
+      cellSize,
+    )
+  }
+
+  if(herramientas.lapiz && (e.buttons === 2)){
+    canvas_ctx.clearRect(
+      datosCeldas.celdaX * cellSize,
+      datosCeldas.celdaY * cellSize,
+      cellSize,
+      cellSize
+    )
+  }
+
+
+}
+
+
+
 
 //----herramientoa de inció Canvas-------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
@@ -235,80 +340,6 @@ canvas.addEventListener("mousedown", (e) => {
 }
 
 });
-
-
-
-// Lapiz --------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
-
-let colorDibujado = "#000";
-
-function moverLapiz(e) {
-
-
-  // funcion de dibular al esta activo el dibujando
-
-  if (e.buttons === 1){
-
-  if (mousePresionando === true && herramientas.lapiz === true) {
-
-
-    let datosCeldas = sacarDatos(e);
-    if (!datosCeldas) return;
-
-    ctx.fillStyle = `${colorDibujado}`;
-
-      ctx.fillRect(
-      datosCeldas.celdaX * cellSize,
-      datosCeldas.celdaY * cellSize,
-      cellSize,
-      cellSize,
-    );
-  }
-    }
-
-    if (e.buttons & 2) moverBorrador(e);
-  
-}
-
-// borrador---------------------------------------------------------
-// ------------------------------------------------------------------
-// -----------------------------------------------------------------
-
-function moverBorrador(e) {
-  // funcion de dibular al esta activo el dibujando
-
-  if(!mousePresionando) return;
-
-      let datosCeldas = sacarDatos(e);
-
-
-  if (herramientas.borrador && (e.buttons & 1)) {
-
-
-    if (!datosCeldas) return;
-
-    ctx.clearRect(
-      datosCeldas.celdaX * cellSize,
-      datosCeldas.celdaY * cellSize,
-      cellSize,
-      cellSize,
-    )
-  }
-
-  if(herramientas.lapiz && (e.buttons & 2)){
-    ctx.clearRect(
-      datosCeldas.celdaX * cellSize,
-      datosCeldas.celdaY * cellSize,
-      cellSize,
-      cellSize
-    )
-  }
-
-
-}
 
 
 //-mover lapiz y borrador----------------------------------------------------------------------------
@@ -342,3 +373,8 @@ const color = $("#colorLapiz");
 color.addEventListener("change", () => {
   colorDibujado = color.value;
 });
+
+
+
+//rellenar -------------------------------------------------------------------------------------
+

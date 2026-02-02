@@ -2,9 +2,8 @@ body{
     background-color: #c6e5b1;
 }
 
-#EspacioDeCanvas{
-    border: solid 1px black;
-}
+
+
 
 .contenedorCanvas{
     display: flex;
@@ -15,6 +14,17 @@ body{
 
 #EspacioDeCanvas{
     background-color: white;
+}
+
+#gridCanvas{
+    position: absolute;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.ocultar{
+    display: none;
+    visibility: none;
 }
 
 .titulo{
