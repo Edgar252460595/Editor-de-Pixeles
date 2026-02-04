@@ -33,23 +33,36 @@ body{
 
 }
 
+select, input{
+    text-align: center;
+
+}
 
 /*Menu de herramientas-------------------------*/
 
 #contenedorHerramientas{
+    top: 50px;
+    right: 50px;
+    width: 10vw;
+
+}
+
+#menuGuardado{
+    top: 50px;
+    left: 50px;
+    width: 10vw;
+}
+
+.contenedorMenus{
     border: solid black 1px;
     border-radius: 5px;
     display: flex;
     position: fixed;
-    width: 10vw;
     height: auto;
     justify-content: center;
     z-index: 10000;
-    top: 50px;
-    right: 50px;
     background-color: #ffc094;
     box-shadow: #ffc194b8;
-    
 }
 
 .arrastre{
@@ -84,7 +97,51 @@ body{
     text-align: center;
     background-color: aliceblue;
     cursor: pointer;
+    justify-content: center;
 }
+
+#opcionesGuardado{
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-align: center;
+    justify-content: center;
+
+    
+
+}
+
+#opcionesGuardado li {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    background-color: aliceblue;
+    justify-content: center;
+    width: 15vh;
+}
+
+#opcionesGuardado #guardarImagen:hover{
+    cursor: pointer;
+
+}
+
+
+#opcionesGuardado #guardarImagen:hover{
+    background-color: rgba(240, 248, 255, 0.79);
+}
+
+#opcionesGuardado #guardarImagen:active{
+    background-color: rgba(240, 248, 255, 0.693);
+
+}
+
 
 #listaDeHerramientas li:hover{
     background-color: rgba(240, 248, 255, 0.79);

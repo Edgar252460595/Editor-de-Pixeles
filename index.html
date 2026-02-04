@@ -8,34 +8,51 @@
   <body>
     <h1 class="titulo">Editor de Pixel</h1>
 
-    <div id="contenedorHerramientas" class="menuFlotante">
-      <aside>
-        <button class="arrastre">:::</button>
-        <ul id="listaDeHerramientas">
-          <li id="lapiz">Lapiz</li>
+    <aside id="contenedorHerramientas" class="menuFlotante contenedorMenus">
+      <button class="arrastre">:::</button>
+      <ul id="listaDeHerramientas">
+        <li id="lapiz">Lapiz</li>
 
-          <li><input type="color" id="colorLapiz" value="#000000" /></li>
+        <li><input type="color" id="colorLapiz" value="#000000" /></li>
 
-          <li id="borrador">Borrador</li>
-          <li>
-            <div class="EspacioDeTrabajo">
-              <select name="celdas" id="CantidadDeCuadros">
-                <option value="4" selected>4</option>
-                <option value="8">8</option>
-                <option value="16">16</option>
-                <option value="32">32</option>
-                <option value="64">64</option>
-                <option value="128">128</option>
-              </select>
-            </div>
-          </li>
-          <li id="btn_QuitarGrillas">Quitar Grillas</li>
+        <li id="borrador">Borrador</li>
+        <li>
+          <div class="EspacioDeTrabajo">
+            <select name="celdas" id="CantidadDeCuadros">
+              <option value="4" selected>4</option>
+              <option value="8">8</option>
+              <option value="16">16</option>
+              <option value="32">32</option>
+              <option value="64">64</option>
+              <option value="128">128</option>
+            </select>
+          </div>
+        </li>
+        <li id="btn_QuitarGrillas">Quitar Grillas</li>
+        <li id="rellenar">Rellenar</li>
+      </ul>
+    </aside>
 
-          <li id="rellenar">Rellenar</li>
+    <aside id="menuGuardado" class="contenedorMenus">
+      <button class="arrastre">:::</button>
 
-        </ul>
-      </aside>
-    </div>
+      <ul id="opcionesGuardado">
+        <li>
+          <span>Elije el formato</span
+          ><select id="formatoImagen">
+            <option value="png">Png</option>
+            <option value="jpg">Jpg</option>
+            <option value="svg">Svg</option>
+          </select>
+        </li>
+
+        <li>
+          <span>Elije el tamaño</span>
+          <input type="number" id="tamañoImagen" placeholder="512" />
+        </li>
+        <li id="guardarImagen">Guardar</li>
+      </ul>
+    </aside>
 
     <div class="contenedorCanvas">
       <canvas id="EspacioDeCanvas" width="512" height="512"></canvas>

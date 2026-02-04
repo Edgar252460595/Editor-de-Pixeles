@@ -4,10 +4,10 @@ const $ = document.querySelector.bind(document);
 
 const $$ = document.querySelectorAll.bind(document);
 
-//--------------------------------------------------------------------
+//-- funcion de dibujar cuadriculas------------------------------------------------------------------
 
 const canvas = $("#EspacioDeCanvas");
-const gridCanvas = $("#gridCanvas")
+const gridCanvas = $("#gridCanvas");
 
 const canvas_ctx = canvas.getContext("2d");
 const grid_ctx = gridCanvas.getContext("2d");
@@ -18,6 +18,10 @@ let cellSize = canvas.width / parseInt(CantidadDeCuadros.value);
 CantidadDeCuadros.addEventListener("change", () => {
   cellSize = canvas.width / parseInt(CantidadDeCuadros.value);
   DibujarCeldas();
+  columnas = parseInt(CantidadDeCuadros.value);
+  filas = columnas;
+
+  matriz = Array.from({ length: filas }, () => Array(columnas).fill(null));
 
   console.log(cellSize);
 });
@@ -30,7 +34,6 @@ function limpiarCanvas() {
 
   canvas_ctx.beginPath();
   grid_ctx.beginPath();
-
 }
 
 function DibujarCeldas() {
@@ -58,13 +61,11 @@ function DibujarCeldas() {
 DibujarCeldas();
 
 //---Oculatar grillas----------------------------------------------------------------------------------------------------
-const btn_OcultarGrillas =$("#btn_QuitarGrillas")
+const btn_OcultarGrillas = $("#btn_QuitarGrillas");
 
-btn_OcultarGrillas.addEventListener("click", () =>{
-  gridCanvas.classList.toggle("ocultar")
-})
-
-
+btn_OcultarGrillas.addEventListener("click", () => {
+  gridCanvas.classList.toggle("ocultar");
+});
 
 //-------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------
@@ -75,11 +76,12 @@ btn_OcultarGrillas.addEventListener("click", () =>{
 
 // arrastre de menu de herramientas
 
-const contenedorHerramientas = $("#contenedorHerramientas");
-let contenedorHerramientaY;
-let contenedorHerramientaX;
+const contenedorMenus = $$(".contenedorMenus");
 
-const arrastreHerramienta = $(".arrastre");
+const arrastreMenu = $$(".arrastre");
+
+let contenedorActivo = null;
+
 
 //arrastre activo
 
@@ -96,14 +98,14 @@ function moverCaja(
   let nuevaPosicionX = posicionInicialX + desplazamientoX;
   let nuevaPosicionY = posicionInicialY + desplazamientoY;
 
-  const limiteX = window.innerWidth - contenedorHerramientas.offsetWidth;
-  const limiteY = window.innerHeight - contenedorHerramientas.offsetHeight;
+  const limiteX = window.innerWidth - contenedorActivo.offsetWidth;
+  const limiteY = window.innerHeight - contenedorActivo.offsetHeight;
 
   nuevaPosicionX = Math.max(0, Math.min(nuevaPosicionX, limiteX));
   nuevaPosicionY = Math.max(0, Math.min(nuevaPosicionY, limiteY));
 
-  contenedorHerramientas.style.top = nuevaPosicionY + "px";
-  contenedorHerramientas.style.left = nuevaPosicionX + "px";
+  contenedorActivo.style.top = nuevaPosicionY + "px";
+  contenedorActivo.style.left = nuevaPosicionX + "px";
 }
 
 // posision y movimiento del mouse
@@ -147,6 +149,7 @@ function eventoMoverCaja(e) {
 
 function dejarDeArrastar() {
   arrastreActivo = false;
+  contenedorActivo = null;
   console.log("soltando");
 
   document.removeEventListener("mousemove", eventoMoverCaja);
@@ -159,15 +162,18 @@ let GuardadoDeMovimientos = {};
 
 // evento incial de arrastre
 
-arrastreHerramienta.addEventListener("mousedown", (e) => {
+arrastreMenu.forEach(arrastre => {
+arrastre.addEventListener("mousedown", (e) => {
   e.preventDefault();
+ 
+  contenedorActivo = arrastre.closest(".contenedorMenus")
 
   GuardadoDeMovimientos.mouseInicialX = e.clientX;
 
   GuardadoDeMovimientos.mouseInicialY = e.clientY;
 
-  GuardadoDeMovimientos.posicionInicialX = contenedorHerramientas.offsetLeft;
-  GuardadoDeMovimientos.posicionInicialY = contenedorHerramientas.offsetTop;
+  GuardadoDeMovimientos.posicionInicialX = contenedorActivo.offsetLeft;
+  GuardadoDeMovimientos.posicionInicialY = contenedorActivo.offsetTop;
 
   console.log("estoy arrastrando");
 
@@ -175,14 +181,17 @@ arrastreHerramienta.addEventListener("mousedown", (e) => {
 
   document.addEventListener("mousemove", eventoMoverCaja);
   window.addEventListener("mouseup", dejarDeArrastar);
+})
+
 });
 
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
+//--herramientas---------------------------------------------------------------------------------------------
 
 const btn_lapiz = $("#lapiz");
 const btn_borrador = $("#borrador");
+const btn_rellenar = $("#rellenar");
 
 let herramientas = {
   lapiz: true,
@@ -208,13 +217,10 @@ btn_borrador.addEventListener("click", () => {
   herramientas.borrador = true;
 });
 
-const rellenar = $("#rellenar")
-
-rellenar.addEventListener("click", () =>{
+btn_rellenar.addEventListener("click", () => {
   quitarSelecionHerramienta();
-  rellenar = true;
-})
-
+  herramientas.rellenar = true;
+});
 
 //--sacar datos de posicion y dibuo y borrado de celdas---------------------------------------------------------------------------------------------
 
@@ -235,10 +241,6 @@ function sacarDatos(e) {
   return { celdaX, celdaY };
 }
 
-
-
-
-
 // Lapiz --------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
@@ -247,124 +249,103 @@ function sacarDatos(e) {
 let colorDibujado = "#000";
 
 function moverLapiz(e) {
-
-
   // funcion de dibular al esta activo el dibujando
 
-  if (e.buttons === 1){
+  if (e.buttons === 1) {
+    if (mousePresionando === true && herramientas.lapiz === true) {
+      let datosCeldas = sacarDatos(e);
+      if (!datosCeldas) return;
 
-  if (mousePresionando === true && herramientas.lapiz === true) {
-
-
-    let datosCeldas = sacarDatos(e);
-    if (!datosCeldas) return;
-
-    canvas_ctx.fillStyle = `${colorDibujado}`;
+      canvas_ctx.fillStyle = `${colorDibujado}`;
 
       canvas_ctx.fillRect(
-      datosCeldas.celdaX * cellSize,
-      datosCeldas.celdaY * cellSize,
-      cellSize,
-      cellSize,
-    );
-  }
-    }
+        datosCeldas.celdaX * cellSize,
+        datosCeldas.celdaY * cellSize,
+        cellSize,
+        cellSize,
+      );
 
-    if (e.buttons & 2) moverBorrador(e);
-  
+      matriz[datosCeldas.celdaY][datosCeldas.celdaX] = colorDibujado;
+    }
+  }
+
+  if (e.buttons & 2) moverBorrador(e);
 }
 
 // borrador---------------------------------------------------------
 // ------------------------------------------------------------------
 // -----------------------------------------------------------------
 
+function borrado(datosCeldas) {
+  canvas_ctx.clearRect(
+    datosCeldas.celdaX * cellSize,
+    datosCeldas.celdaY * cellSize,
+    cellSize,
+    cellSize,
+  );
+}
+
 function moverBorrador(e) {
   // funcion de dibular al esta activo el dibujando
 
-  if(!mousePresionando) return;
+  if (!mousePresionando) return;
 
-      let datosCeldas = sacarDatos(e);
+  let datosCeldas = sacarDatos(e);
 
-
-  if (herramientas.borrador && (e.buttons === 1)) {
-
-
+  if (herramientas.borrador && e.buttons === 1) {
     if (!datosCeldas) return;
 
-    canvas_ctx.clearRect(
-      datosCeldas.celdaX * cellSize,
-      datosCeldas.celdaY * cellSize,
-      cellSize,
-      cellSize,
-    )
+    borrado(datosCeldas);
+
+    matriz[datosCeldas.celdaY][datosCeldas.celdaX] = null;
   }
 
-  if(herramientas.lapiz && (e.buttons === 2)){
-    canvas_ctx.clearRect(
-      datosCeldas.celdaX * cellSize,
-      datosCeldas.celdaY * cellSize,
-      cellSize,
-      cellSize
-    )
+  if (herramientas.lapiz && e.buttons === 2) {
+    borrado(datosCeldas);
+
+    matriz[datosCeldas.celdaY][datosCeldas.celdaX] = null;
   }
-
-
 }
-
-
-
 
 //----herramientoa de inció Canvas-------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
 
-
-canvas.addEventListener("contextmenu",(e)=>{
-    e.preventDefault();
-
-})
-
-canvas.addEventListener("mousedown", (e) => {
-  if (herramientas.borrador === true || herramientas.lapiz === true){
-    
-
-    mousePresionando = true;
-    
-    if(herramientas.borrador) moverBorrador(e);
-
-    if(herramientas.lapiz) moverLapiz(e);
-
-
-
-
-
-}
-
+canvas.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
 });
 
+canvas.addEventListener("mousedown", (e) => {
+  if (
+    herramientas.borrador === true ||
+    herramientas.lapiz === true ||
+    herramientas.rellenar === true
+  ) {
+    mousePresionando = true;
+
+    if (herramientas.borrador) moverBorrador(e);
+
+    if (herramientas.lapiz) moverLapiz(e);
+
+    if (herramientas.rellenar) rellenar(e);
+  }
+});
 
 //-mover lapiz y borrador----------------------------------------------------------------------------
 
-function manejarDibujo(e){  
-  if(mousePresionando === false) return;
+function manejarDibujo(e) {
+  if (mousePresionando === false) return;
 
-  if(herramientas.lapiz) moverLapiz(e)
-    else if(herramientas.borrador) moverBorrador(e);
+  if (herramientas.lapiz) moverLapiz(e);
+  else if (herramientas.borrador) moverBorrador(e);
 }
 
-
-canvas.addEventListener("mousemove",manejarDibujo)
-
-
-
+canvas.addEventListener("mousemove", manejarDibujo);
 
 // desactivar mouse presionado para las herramientas
 
 canvas.addEventListener("mouseup", () => {
   mousePresionando = false;
 });
-
-
-
 
 // Cambiar Color Lapiz---------------------------------------------------
 
@@ -374,7 +355,40 @@ color.addEventListener("change", () => {
   colorDibujado = color.value;
 });
 
-
-
 //rellenar -------------------------------------------------------------------------------------
 
+let columnas = parseInt(CantidadDeCuadros.value);
+let filas = columnas;
+
+let matriz = Array.from({ length: filas }, () => Array(columnas).fill(null));
+
+function rellenarBase(fila, columna, colorOriginal, colorNuevo) {
+  if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas) return;
+
+  if (matriz[fila][columna] !== colorOriginal) return;
+
+  matriz[fila][columna] = colorNuevo;
+
+  canvas_ctx.fillStyle = colorNuevo;
+  canvas_ctx.fillRect(columna * cellSize, fila * cellSize, cellSize, cellSize);
+
+  rellenarBase(fila + 1, columna, colorOriginal, colorNuevo);
+  rellenarBase(fila - 1, columna, colorOriginal, colorNuevo);
+  rellenarBase(fila, columna + 1, colorOriginal, colorNuevo);
+  rellenarBase(fila, columna - 1, colorOriginal, colorNuevo);
+}
+
+function rellenar(e) {
+  const datos = sacarDatos(e);
+  if (!datos) return;
+
+  const fila = datos.celdaY;
+  const columna = datos.celdaX;
+
+  const colorOriginal = matriz[fila][columna];
+  const colorNuevo = colorDibujado;
+
+  if (colorOriginal === colorNuevo) return;
+
+  rellenarBase(fila, columna, colorOriginal, colorNuevo);
+}
