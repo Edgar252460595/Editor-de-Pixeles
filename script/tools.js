@@ -9,11 +9,14 @@ export function setupTools() {
 const btn_lapiz = $("#lapiz");
 const btn_borrador = $("#borrador");
 const btn_rellenar = $("#rellenar");
+const btn_gotero = $("#gotero");
+
 
 let herramientas = {
   lapiz: true,
   borrador: false,
   rellenar: false,
+  gotero: false,
 };
 
 function quitarSelecionHerramienta() {
@@ -38,6 +41,12 @@ btn_rellenar.addEventListener("click", () => {
   quitarSelecionHerramienta();
   herramientas.rellenar = true;
 });
+
+btn_gotero.addEventListener("click", (e) =>{
+    quitarSelecionHerramienta();
+    herramientas.gotero = true;
+
+  })
 
 //--sacar datos de posicion y dibuo y borrado de celdas---------------------------------------------------------------------------------------------
 
@@ -135,7 +144,8 @@ state.canvas.addEventListener("mousedown", (e) => {
   if (
     herramientas.borrador === true ||
     herramientas.lapiz === true ||
-    herramientas.rellenar === true
+    herramientas.rellenar === true ||
+    herramientas.gotero === true
   ) {
     mousePresionando = true;
 
@@ -144,6 +154,8 @@ state.canvas.addEventListener("mousedown", (e) => {
     if (herramientas.lapiz) moverLapiz(e);
 
     if (herramientas.rellenar) rellenar(e);
+
+    if (herramientas.gotero) gotero(e);
   }
 });
 
@@ -170,6 +182,10 @@ const color = $("#colorLapiz");
 
 color.addEventListener("change", () => {
   colorDibujado = color.value;
+
+  guardarColor(color.value)
+
+  
 });
 
 //rellenar -------------------------------------------------------------------------------------
@@ -180,20 +196,27 @@ let filas = columnas;
 state.matriz = Array.from({ length: filas }, () => Array(columnas).fill(null));
 
 function rellenarBase(fila, columna, colorOriginal, colorNuevo) {
-  if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas) return;
+
+  if (fila < 0 || fila >= state.filas || columna < 0 || columna >= state.columnas) return;
 
   if (state.matriz[fila][columna] !== colorOriginal) return;
 
   state.matriz[fila][columna] = colorNuevo;
 
   state.canvas_ctx.fillStyle = colorNuevo;
-  state.canvas_ctx.fillRect(columna * cellSize, fila * cellSize, cellSize, cellSize);
+  state.canvas_ctx.fillRect(
+    columna * state.cellSize,
+    fila * state.cellSize,
+    state.cellSize,
+    state.cellSize
+  );
 
   rellenarBase(fila + 1, columna, colorOriginal, colorNuevo);
   rellenarBase(fila - 1, columna, colorOriginal, colorNuevo);
   rellenarBase(fila, columna + 1, colorOriginal, colorNuevo);
   rellenarBase(fila, columna - 1, colorOriginal, colorNuevo);
 }
+
 
 function rellenar(e) {
   const datos = sacarDatos(e);
@@ -202,7 +225,7 @@ function rellenar(e) {
   const fila = datos.celdaY;
   const columna = datos.celdaX;
 
-  const colorOriginal = matriz[fila][columna];
+  const colorOriginal = state.matriz[fila][columna];     
   const colorNuevo = colorDibujado;
 
   if (colorOriginal === colorNuevo) return;
@@ -211,4 +234,76 @@ function rellenar(e) {
 }
 
 
+
+  // funcion de guardado de colores en el menu de colores
+
+  function guardarColor(color_a_guardar){
+    state.paleta.push(color_a_guardar)
+    renderColores(state.paleta)
+  }
+
+  function renderColores(){
+    const menuColores = $("#menuColores")
+
+    menuColores.innerHTML = "";
+
+    state.paleta.forEach (colorAgregar =>{
+      const boton = document.createElement("button");
+      boton.style.background = colorAgregar;
+      boton.style.width =  30 + "px";
+      boton.style.height = 30 + "px";
+      boton.className = "color-boton";
+      boton.dataset.color = colorAgregar;
+
+      boton.addEventListener("click", () =>{
+      colorDibujado = boton.dataset.color;
+      btn_cambiarcolor(colorDibujado)
+
+      })
+
+      menuColores.appendChild(boton);
+
+
+    })
+
+  }
+
+    //GOTERO
+
+  function gotero(e){
+
+      
+  if (!mousePresionando) return;
+
+  let datosCeldas = sacarDatos(e);
+
+  if (herramientas.gotero && e.buttons === 1) {
+    if (!datosCeldas) return;
+
+
+   colorDibujado = state.matriz[datosCeldas.celdaY][datosCeldas.celdaX];
+
+   quitarSelecionHerramienta();
+
+   herramientas.lapiz = true;
+
+  
+  }
+  btn_cambiarcolor(colorDibujado)
+
+  
+
 }
+
+
+    // funcion cambiar de color al boton de colores
+
+function btn_cambiarcolor(e){
+  color.value = `${e}`;
+  console.log(e);
+
+}
+
+
+}
+

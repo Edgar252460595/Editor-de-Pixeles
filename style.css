@@ -166,3 +166,10 @@ select, input{
     text-align: center;
     border-radius: 5px;
 }
+
+#menuColores{
+    bottom: 50px;
+    left: 50px;
+    width: 30vw;
+    height: 10vh;
+}

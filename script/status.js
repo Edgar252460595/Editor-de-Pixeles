@@ -7,5 +7,6 @@ export const state = {
   columnas: 0,
   CantidadDeCuadros:0,
   filas: 0,
-  matriz: []
+  matriz: [],
+  paleta:[]
 };

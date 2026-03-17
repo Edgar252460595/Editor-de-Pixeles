@@ -6,6 +6,10 @@ export function initCanvas() {
 
 
 
+
+
+//
+
 //-- funcion de dibujar cuadriculas------------------------------------------------------------------
 
 state.canvas = $("#EspacioDeCanvas");
@@ -16,17 +20,34 @@ state.grid_ctx = state.gridCanvas.getContext("2d");
 
 state.CantidadDeCuadros = $("#CantidadDeCuadros");
 
-state.cellSize = state.canvas.width / parseInt(CantidadDeCuadros.value);
+state.cellSize = state.canvas.width / parseInt(state.CantidadDeCuadros.value);
+
+
+// inicializar tamaño
+state.columnas = parseInt(state.CantidadDeCuadros.value);
+state.filas = state.columnas;
+
+// crear matriz desde el inicio
+state.matriz = Array.from(
+  { length: state.filas },
+  () => Array(state.columnas).fill(null)
+);
 
 state.CantidadDeCuadros.addEventListener("change", () => {
-  state.cellSize = state.canvas.width / parseInt(CantidadDeCuadros.value);
-  DibujarCeldas();
-  state.columnas = parseInt(CantidadDeCuadros.value);
+
+  state.columnas = parseInt(state.CantidadDeCuadros.value);
   state.filas = state.columnas;
 
-  state.matriz = Array.from({ length: state.filas }, () => Array(state.columnas).fill(null));
+  state.cellSize = state.canvas.width / state.columnas;
 
-  console.log(state.cellSize);
+  state.matriz = Array.from(
+    { length: state.filas },
+    () => Array(state.columnas).fill(null)
+  );
+
+  DibujarCeldas();
+
+  console.log("Nuevo tamaño:", state.columnas);
 });
 
 //--funcion de dibujo de celdas------------------------------------------------------------------
@@ -55,13 +76,12 @@ function DibujarCeldas() {
   }
   state.grid_ctx.strokeStyle = "#ccc";
   state.grid_ctx.stroke();
+
+  
+
 }
 
 //--------------------------------------------------------------------
-
-// pre cargar canva
-
-DibujarCeldas();
 
 // pre cargar canva
 
