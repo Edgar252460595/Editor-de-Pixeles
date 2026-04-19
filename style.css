@@ -1,5 +1,6 @@
 body {
   background-color: #c6e5b1;
+
 }
 
 .contenedorCanvas {
@@ -95,13 +96,61 @@ input {
   margin-bottom: 5px;
   margin-top: 5px;
   border-radius: 5px;
+  border: solid 1px black;
+  background-color: aliceblue;
   text-align: center;
-  background-color: none;
+  background-color: transparent;
   cursor: pointer;
   justify-content: center;
-  width: 20px;
-  height: 30px;
 }
+
+#menuHerramientas{
+  top: 100px;
+  right: 400px;
+  width: 5vh;
+
+}
+
+#menuHerramientas ul {
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+  list-style: none;
+}
+
+#menuHerramientas li {
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  justify-content: center;
+}
+
+#menuHerramientas ul li{
+  cursor: pointer;
+}
+
+#menuHerramientas ul li:hover{
+  background-color: rgba(240, 248, 255, 0.79);
+}
+
+#menuHerramientas ul li:active{
+  background-color: rgba(240, 248, 255, 0.693);
+}
+
+#menuHerramientas li img {
+  width: 30px;
+  height: 35px;
+}
+
+#deshacer{
+  transform: scaleX(-1);
+}
+
 
 #opcionesGuardado {
   display: flex;
@@ -173,14 +222,14 @@ input {
 #menuFiguras{
   bottom: 50px;
   right: 40px;
-  width: 10vw;
-  height: 20vh;
+  width: 5vw;
+  height: 30vh;
 }
 
 #menuFiguras ul{
   padding: 0;
   margin: 0;
-  margin-top: 5px;
+  margin-top: 0px;
   list-style: none;
   width: 100px;
 }
@@ -189,12 +238,10 @@ input {
   display: flex;
   flex-direction: row;
   list-style-type: none;
-  margin-bottom: 5px;
-  margin-top: 5px;
-  border: 1px solid black;
+  margin-bottom: 10px;
+  margin-top: 10px;
   border-radius: 5px;
   text-align: center;
-  background-color: aliceblue;
   cursor: pointer;
   justify-content: center;
 }
@@ -209,4 +256,9 @@ input {
 
 #menuFiguras ul li:active{
   background-color: rgba(240, 248, 255, 0.693);
+}
+
+#menuFiguras li img {
+  width: 30px;
+  height: 35px;
 }
