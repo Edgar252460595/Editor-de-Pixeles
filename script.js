@@ -8,9 +8,11 @@ const $$ = document.querySelectorAll.bind(document);
 
 const canvas = $("#EspacioDeCanvas");
 const gridCanvas = $("#gridCanvas");
+const predibujadoCanvas = $("#predibujadoCanvas")
 
 const canvas_ctx = canvas.getContext("2d");
 const grid_ctx = gridCanvas.getContext("2d");
+const overlay_ctx = predibujadoCanvas.getContext("2d");
 
 const CantidadDeCuadros = $("#CantidadDeCuadros");
 let cellSize = canvas.width / parseInt(CantidadDeCuadros.value);
@@ -81,7 +83,6 @@ const contenedorMenus = $$(".contenedorMenus");
 const arrastreMenu = $$(".arrastre");
 
 let contenedorActivo = null;
-
 
 //arrastre activo
 
@@ -162,27 +163,26 @@ let GuardadoDeMovimientos = {};
 
 // evento incial de arrastre
 
-arrastreMenu.forEach(arrastre => {
-arrastre.addEventListener("mousedown", (e) => {
-  e.preventDefault();
- 
-  contenedorActivo = arrastre.closest(".contenedorMenus")
+arrastreMenu.forEach((arrastre) => {
+  arrastre.addEventListener("mousedown", (e) => {
+    e.preventDefault();
 
-  GuardadoDeMovimientos.mouseInicialX = e.clientX;
+    contenedorActivo = arrastre.closest(".contenedorMenus");
 
-  GuardadoDeMovimientos.mouseInicialY = e.clientY;
+    GuardadoDeMovimientos.mouseInicialX = e.clientX;
 
-  GuardadoDeMovimientos.posicionInicialX = contenedorActivo.offsetLeft;
-  GuardadoDeMovimientos.posicionInicialY = contenedorActivo.offsetTop;
+    GuardadoDeMovimientos.mouseInicialY = e.clientY;
 
-  console.log("estoy arrastrando");
+    GuardadoDeMovimientos.posicionInicialX = contenedorActivo.offsetLeft;
+    GuardadoDeMovimientos.posicionInicialY = contenedorActivo.offsetTop;
 
-  arrastreActivo = true;
+    console.log("estoy arrastrando");
 
-  document.addEventListener("mousemove", eventoMoverCaja);
-  window.addEventListener("mouseup", dejarDeArrastar);
-})
+    arrastreActivo = true;
 
+    document.addEventListener("mousemove", eventoMoverCaja);
+    window.addEventListener("mouseup", dejarDeArrastar);
+  });
 });
 
 //-----------------------------------------------------------------------------------------------
@@ -255,6 +255,7 @@ function moverLapiz(e) {
     if (mousePresionando === true && herramientas.lapiz === true) {
       let datosCeldas = sacarDatos(e);
       if (!datosCeldas) return;
+
 
       canvas_ctx.fillStyle = `${colorDibujado}`;
 
@@ -333,6 +334,11 @@ canvas.addEventListener("mousedown", (e) => {
 //-mover lapiz y borrador----------------------------------------------------------------------------
 
 function manejarDibujo(e) {
+ 
+  let datos = sacarDatos(e)
+
+  lapiz_prevision(datos)
+
   if (mousePresionando === false) return;
 
   if (herramientas.lapiz) moverLapiz(e);
@@ -354,6 +360,34 @@ const color = $("#colorLapiz");
 color.addEventListener("change", () => {
   colorDibujado = color.value;
 });
+
+
+// prevista del lapiz ------------------------------------------------------
+
+function lapiz_prevision (datosCeldas){
+  const  ctx = overlay_ctx;
+
+    ctx.clearRect(0, 0, predibujadoCanvas.width, predibujadoCanvas.height);
+    const tamaño = state.tamaño_lapiz;
+
+  ctx.strokeStyle = colorDibujado; // color del preview
+  ctx.lineWidth = 1;
+
+  for (let x = 0; x < tamaño; x++) {
+    for (let y = 0; y < tamaño; y++) {
+
+      const celdaX = datosCeldas.celdaX + x;
+      const celdaY = datosCeldas.celdaY + y;
+
+      ctx.strokeRect(
+        celdaX * cellSize,
+        celdaY * cellSize,
+        cellSize,
+        cellSize
+      );
+    }
+  }
+}
 
 //rellenar -------------------------------------------------------------------------------------
 
@@ -395,79 +429,56 @@ function rellenar(e) {
 
 //-- guardado-----------------------------------------------------------------------------
 
-const formato_Imagen = $("#formatoImagen")
+const formato_Imagen = $("#formatoImagen");
 
-const tamaño_Imagen = $("#tamañoImagen")
+const tamaño_Imagen = $("#tamañoImagen");
 
-const btn_Guardar = $("#guardarImagen")
+const btn_Guardar = $("#guardarImagen");
 
-
-
-
-
-function guardadoImagenEscalada(nuevotamaño){
+function guardadoImagenEscalada(nuevotamaño) {
   const tempCanvas = document.createElement("canvas");
-  const tempCtx = tempCanvas.getContext("2d"); 
+  const tempCtx = tempCanvas.getContext("2d");
 
-  
   tempCanvas.width = nuevotamaño;
   tempCanvas.height = nuevotamaño;
 
   tempCtx.drawImage(canvas, 0, 0, nuevotamaño, nuevotamaño);
 
-
   let tipoImagen = formato_Imagen.value;
 
+  if (tipoImagen === "png") {
+    const enlace = document.createElement("a");
+    enlace.download = "mi_dibujo.png";
+    enlace.href = tempCanvas.toDataURL("image/png");
+    enlace.click();
+  }
 
-if(tipoImagen === "png"){
-  const enlace = document.createElement("a")
-  enlace.download = "mi_dibujo.png"
-  enlace.href = tempCanvas.toDataURL("image/png")
-  enlace.click()
+  if (tipoImagen === "jpeg") {
+    guardarJpeg(tempCanvas);
+  }
 }
 
-if(tipoImagen === "jpeg"){
-  
-  guardarJpeg(tempCanvas)
-
-}
-
-
-}
-
-
-
-
-function guardarJpeg(canvasEscalado){
-  const tempCanvas = document.createElement("canvas")
-  tempCanvas.width = canvasEscalado.width
-  tempCanvas.height = canvasEscalado.height
-  const tempCtx = tempCanvas.getContext("2d")
-
+function guardarJpeg(canvasEscalado) {
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = canvasEscalado.width;
+  tempCanvas.height = canvasEscalado.height;
+  const tempCtx = tempCanvas.getContext("2d");
 
   //fondo blanco
 
-  tempCtx.fillStyle = "#ffffff"
-  tempCtx.fillRect(0,0, tempCanvas.width, tempCanvas.height)
+  tempCtx.fillStyle = "#ffffff";
+  tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
 
   //dibujar imagen original encima
 
-  tempCtx.drawImage(canvasEscalado,0,0)
+  tempCtx.drawImage(canvasEscalado, 0, 0);
 
-  const enlace = document.createElement("a")
-  enlace.download = "mi_dibujo.jpeg"
-  enlace.href = tempCanvas.toDataURL("image/jpeg", 0.9)
-  enlace.click()
-
-
+  const enlace = document.createElement("a");
+  enlace.download = "mi_dibujo.jpeg";
+  enlace.href = tempCanvas.toDataURL("image/jpeg", 0.9);
+  enlace.click();
 }
 
-
-
-
-btn_Guardar.addEventListener("click", ()=>{
-
-
-guardadoImagenEscalada(parseInt(tamaño_Imagen.value))
-
-})
+btn_Guardar.addEventListener("click", () => {
+  guardadoImagenEscalada(parseInt(tamaño_Imagen.value));
+});

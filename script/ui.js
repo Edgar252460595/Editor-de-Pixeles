@@ -1,118 +1,114 @@
-import { $, $$ } from './dom.js';
+import { $, $$ } from "./dom.js";
 
 export function initUI() {
-    console.log("UI lista");
+  console.log("UI lista");
 
-    
-// arrastre de menu de herramientas
+  // arrastre de menu de herramientas
 
-const contenedorMenus = $$(".contenedorMenus");
+  const contenedorMenus = $$(".contenedorMenus");
 
-const arrastreMenu = $$(".arrastre");
+  const arrastreMenu = $$(".arrastre");
 
-let contenedorActivo = null;
+  let contenedorActivo = null;
 
+  //arrastre activo
 
-//arrastre activo
+  let arrastreActivo = false;
 
-let arrastreActivo = false;
+  // funcion de movimiento
 
-// funcion de movimiento
+  function moverCaja(
+    posicionInicialX,
+    posicionInicialY,
+    desplazamientoX,
+    desplazamientoY,
+  ) {
+    let nuevaPosicionX = posicionInicialX + desplazamientoX;
+    let nuevaPosicionY = posicionInicialY + desplazamientoY;
 
-function moverCaja(
-  posicionInicialX,
-  posicionInicialY,
-  desplazamientoX,
-  desplazamientoY,
-) {
-  let nuevaPosicionX = posicionInicialX + desplazamientoX;
-  let nuevaPosicionY = posicionInicialY + desplazamientoY;
+    const limiteX = window.innerWidth - contenedorActivo.offsetWidth;
+    const limiteY = window.innerHeight - contenedorActivo.offsetHeight;
 
-  const limiteX = window.innerWidth - contenedorActivo.offsetWidth;
-  const limiteY = window.innerHeight - contenedorActivo.offsetHeight;
+    nuevaPosicionX = Math.max(0, Math.min(nuevaPosicionX, limiteX));
+    nuevaPosicionY = Math.max(0, Math.min(nuevaPosicionY, limiteY));
 
-  nuevaPosicionX = Math.max(0, Math.min(nuevaPosicionX, limiteX));
-  nuevaPosicionY = Math.max(0, Math.min(nuevaPosicionY, limiteY));
-
-  contenedorActivo.style.top = nuevaPosicionY + "px";
-  contenedorActivo.style.left = nuevaPosicionX + "px";
-}
-
-// posision y movimiento del mouse
-
-function sacarPosiciondelMouse(
-  mouseInicialX,
-  mouseInicialY,
-  mouseActualX,
-  mouseActualY,
-) {
-  let desplazamientoX = mouseActualX - mouseInicialX;
-  let desplazamientoY = mouseActualY - mouseInicialY;
-
-  return { desplazamientoX, desplazamientoY };
-}
-
-//evento de movimiento
-
-function eventoMoverCaja(e) {
-  if (arrastreActivo === true) {
-    let mouseActualX = e.clientX;
-    let mouseActualY = e.clientY;
-
-    let desplazar = sacarPosiciondelMouse(
-      GuardadoDeMovimientos.mouseInicialX,
-      GuardadoDeMovimientos.mouseInicialY,
-      mouseActualX,
-      mouseActualY,
-    );
-
-    moverCaja(
-      GuardadoDeMovimientos.posicionInicialX,
-      GuardadoDeMovimientos.posicionInicialY,
-      desplazar.desplazamientoX,
-      desplazar.desplazamientoY,
-    );
+    contenedorActivo.style.top = nuevaPosicionY + "px";
+    contenedorActivo.style.left = nuevaPosicionX + "px";
   }
-}
 
-// funcion dejar de mover----------------------------
+  // posision y movimiento del mouse
 
-function dejarDeArrastar() {
-  arrastreActivo = false;
-  contenedorActivo = null;
-  console.log("soltando");
+  function sacarPosiciondelMouse(
+    mouseInicialX,
+    mouseInicialY,
+    mouseActualX,
+    mouseActualY,
+  ) {
+    let desplazamientoX = mouseActualX - mouseInicialX;
+    let desplazamientoY = mouseActualY - mouseInicialY;
 
-  document.removeEventListener("mousemove", eventoMoverCaja);
-  window.removeEventListener("mouseup", dejarDeArrastar);
-}
+    return { desplazamientoX, desplazamientoY };
+  }
 
-//-------------------------------------------
+  //evento de movimiento
 
-let GuardadoDeMovimientos = {};
+  function eventoMoverCaja(e) {
+    if (arrastreActivo === true) {
+      let mouseActualX = e.clientX;
+      let mouseActualY = e.clientY;
 
-// evento incial de arrastre
+      let desplazar = sacarPosiciondelMouse(
+        GuardadoDeMovimientos.mouseInicialX,
+        GuardadoDeMovimientos.mouseInicialY,
+        mouseActualX,
+        mouseActualY,
+      );
 
-arrastreMenu.forEach(arrastre => {
-arrastre.addEventListener("mousedown", (e) => {
-  e.preventDefault();
- 
-  contenedorActivo = arrastre.closest(".contenedorMenus")
+      moverCaja(
+        GuardadoDeMovimientos.posicionInicialX,
+        GuardadoDeMovimientos.posicionInicialY,
+        desplazar.desplazamientoX,
+        desplazar.desplazamientoY,
+      );
+    }
+  }
 
-  GuardadoDeMovimientos.mouseInicialX = e.clientX;
+  // funcion dejar de mover----------------------------
 
-  GuardadoDeMovimientos.mouseInicialY = e.clientY;
+  function dejarDeArrastar() {
+    arrastreActivo = false;
+    contenedorActivo = null;
+    console.log("soltando");
 
-  GuardadoDeMovimientos.posicionInicialX = contenedorActivo.offsetLeft;
-  GuardadoDeMovimientos.posicionInicialY = contenedorActivo.offsetTop;
+    document.removeEventListener("mousemove", eventoMoverCaja);
+    window.removeEventListener("mouseup", dejarDeArrastar);
+  }
 
-  console.log("estoy arrastrando");
+  //-------------------------------------------
 
-  arrastreActivo = true;
+  let GuardadoDeMovimientos = {};
 
-  document.addEventListener("mousemove", eventoMoverCaja);
-  window.addEventListener("mouseup", dejarDeArrastar);
-})
+  // evento incial de arrastre
 
-});
+  arrastreMenu.forEach((arrastre) => {
+    arrastre.addEventListener("mousedown", (e) => {
+      e.preventDefault();
 
+      contenedorActivo = arrastre.closest(".contenedorMenus");
+
+      GuardadoDeMovimientos.mouseInicialX = e.clientX;
+
+      GuardadoDeMovimientos.mouseInicialY = e.clientY;
+
+      GuardadoDeMovimientos.posicionInicialX = contenedorActivo.offsetLeft;
+      GuardadoDeMovimientos.posicionInicialY = contenedorActivo.offsetTop;
+
+      console.log("estoy arrastrando");
+
+      arrastreActivo = true;
+
+      document.addEventListener("mousemove", eventoMoverCaja);
+      window.addEventListener("mouseup", dejarDeArrastar);
+    });
+  });
 }

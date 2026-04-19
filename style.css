@@ -1,175 +1,212 @@
-body{
-    background-color: #c6e5b1;
+body {
+  background-color: #c6e5b1;
 }
 
-
-
-
-.contenedorCanvas{
-    display: flex;
-    justify-content: center;
-    margin-top: 4vh;
+.contenedorCanvas {
+  display: flex;
+  justify-content: center;
+  margin-top: 4vh;
 }
 
-
-#EspacioDeCanvas{
-    background-color: white;
+#EspacioDeCanvas {
+  background-color: white;
+  cursor: none;
 }
 
-#gridCanvas{
-    position: absolute;
-    z-index: 9999;
-    pointer-events: none;
+#gridCanvas {
+  position: absolute;
+  z-index: 9999;
+  pointer-events: none;
 }
 
-.ocultar{
-    display: none;
-    visibility: none;
-}
-
-.titulo{
-    text-align: center;
-    margin: 4vh;
+#predibujadoCanvas{
+  position: absolute;
+  z-index: 99999;
+  pointer-events: none;
 
 }
 
-select, input{
-    text-align: center;
+.ocultar {
+  display: none;
+  visibility: none;
+}
 
+.titulo {
+  text-align: center;
+  margin: 4vh;
+}
+
+select,
+input {
+  text-align: center;
 }
 
 /*Menu de herramientas-------------------------*/
 
-#contenedorHerramientas{
-    top: 50px;
-    right: 50px;
-    width: 10vw;
-
+#contenedorHerramientas {
+  top: 50px;
+  right: 50px;
+  width: 10vw;
 }
 
-#menuGuardado{
-    top: 50px;
-    left: 50px;
-    width: 10vw;
+#menuGuardado {
+  top: 50px;
+  left: 50px;
+  width: 10vw;
 }
 
-.contenedorMenus{
-    border: solid black 1px;
-    border-radius: 5px;
-    display: flex;
-    position: fixed;
-    height: auto;
-    justify-content: center;
-    z-index: 10000;
-    background-color: #ffc094;
-    box-shadow: #ffc194b8;
+.contenedorMenus {
+  border: solid black 1px;
+  border-radius: 5px;
+  display: flex;
+  position: fixed;
+  height: auto;
+  justify-content: center;
+  z-index: 10000;
+  background-color: #ffc094;
+  box-shadow: #ffc194b8;
 }
 
-.arrastre{
-   position: absolute;
-   top: 0;
-   left: 0;
-   border-radius: 5px;
-   border: 0px;
-   background-color: #ffc094;
-   cursor:grab;
+.arrastre {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 5px;
+  border: 0px;
+  background-color: #ffc094;
+  cursor: grab;
 }
 
-
-.arrastre:active{
-   cursor:grabbing;
+.arrastre:active {
+  cursor: grabbing;
 }
 
-#listaDeHerramientas{
-    padding: 0;
-    margin: 0;
-    list-style: none;
+#listaDeHerramientas {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  width: 100px;
 }
 
 #listaDeHerramientas li {
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    border: 1px solid black;
-    border-radius: 5px;
-    text-align: center;
-    background-color: aliceblue;
-    cursor: pointer;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: none;
+  cursor: pointer;
+  justify-content: center;
+  width: 20px;
+  height: 30px;
 }
 
-#opcionesGuardado{
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    text-align: center;
-    justify-content: center;
-
-    
-
+#opcionesGuardado {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: center;
+  justify-content: center;
 }
 
 #opcionesGuardado li {
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    border: 1px solid black;
-    border-radius: 5px;
-    text-align: center;
-    background-color: aliceblue;
-    justify-content: center;
-    width: 15vh;
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+  background-color: aliceblue;
+  justify-content: center;
+  width: 15vh;
 }
 
-#opcionesGuardado #guardarImagen:hover{
-    cursor: pointer;
+#opcionesGuardado #guardarImagen:hover {
+  cursor: pointer;
+}
 
+#opcionesGuardado #guardarImagen:hover {
+  background-color: rgba(240, 248, 255, 0.79);
+}
+
+#opcionesGuardado #guardarImagen:active {
+  background-color: rgba(240, 248, 255, 0.693);
+}
+
+#listaDeHerramientas li:hover {
+  background-color: rgba(240, 248, 255, 0.79);
+}
+
+#listaDeHerramientas li:active {
+  background-color: rgba(240, 248, 255, 0.693);
+}
+
+#CantidadDeCuadros {
+  background-color: aliceblue;
+  width: 100%;
+  text-align: center;
+  border-radius: 5px;
+}
+
+#colorLapiz {
+  background-color: aliceblue;
+  width: 100%;
+  text-align: center;
+  border-radius: 5px;
+}
+
+#menuColores {
+  bottom: 50px;
+  left: 40px;
+  width: 30vw;
+  height: 5vh;
 }
 
 
-#opcionesGuardado #guardarImagen:hover{
-    background-color: rgba(240, 248, 255, 0.79);
+
+#menuFiguras{
+  bottom: 50px;
+  right: 40px;
+  width: 10vw;
+  height: 20vh;
 }
 
-#opcionesGuardado #guardarImagen:active{
-    background-color: rgba(240, 248, 255, 0.693);
-
+#menuFiguras ul{
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+  list-style: none;
+  width: 100px;
 }
 
-
-#listaDeHerramientas li:hover{
-    background-color: rgba(240, 248, 255, 0.79);
-
+#menuFiguras ul li {
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: center;
+  background-color: aliceblue;
+  cursor: pointer;
+  justify-content: center;
 }
 
-#listaDeHerramientas li:active{
-    background-color: rgba(240, 248, 255, 0.693);
-
+#menuFiguras ul li{
+  cursor: pointer;
 }
 
-#CantidadDeCuadros{
-    background-color: aliceblue;
-    width: 100%;
-    text-align: center;
-    border-radius: 5px;
+#menuFiguras ul li:hover{
+  background-color: rgba(240, 248, 255, 0.79);
 }
 
-#colorLapiz{
-    background-color: aliceblue;
-    width: 100%;
-    text-align: center;
-    border-radius: 5px;
-}
-
-#menuColores{
-    bottom: 50px;
-    left: 50px;
-    width: 30vw;
-    height: 10vh;
+#menuFiguras ul li:active{
+  background-color: rgba(240, 248, 255, 0.693);
 }
